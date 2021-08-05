@@ -1,0 +1,13 @@
+.position-sticky{
+  z-index: 9999;
+}
+header{
+  height: 200px;
+}
+.card{
+  cursor: pointer;
+}
+.card .badge{
+  transform: translateX(-.5rem) translateY(-.5rem);
+  background: rgba(1, 0, 0, .7);
+}

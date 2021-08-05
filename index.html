@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Countries Of The World</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div id="app">
+    <!--navbar-->
+    <div class="row position-sticky top-0">
+      <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand fw-bold" href="#">
+            Countries
+            <span class="d-none d-lg-inline-block">of the World</span>
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse flex-grow-0" id="navbarText">
+            <div class="btn-group flex-wrap" role="group">
+              <input type="radio" class="btn-check" name="btnradio" id="btnradioAll" autocomplete="off" checked>
+              <label class="btn btn-outline-light" for="btnradioAll" @click="changeRegion('')">All</label>
+              <input type="radio" class="btn-check" name="btnradio" id="btnradioAsia" autocomplete="off">
+              <label class="btn btn-outline-light" for="btnradioAsia" @click="changeRegion('Asia')">Asia</label>
+              <input type="radio" class="btn-check" name="btnradio" id="btnradioEurope" autocomplete="off">
+              <label class="btn btn-outline-light" for="btnradioEurope" @click="changeRegion('Europe')">Europe</label>
+              <input type="radio" class="btn-check" name="btnradio" id="btnradioAmericas" autocomplete="off">
+              <label class="btn btn-outline-light" for="btnradioAmericas"
+                @click="changeRegion('Americas')">Americas</label>
+              <input type="radio" class="btn-check" name="btnradio" id="btnradioAfrica" autocomplete="off">
+              <label class="btn btn-outline-light" for="btnradioAfrica" @click="changeRegion('Africa')">Africa</label>
+              <input type="radio" class="btn-check" name="btnradio" id="btnradioOceania" autocomplete="off">
+              <label class="btn btn-outline-light" for="btnradioOceania"
+                @click="changeRegion('Oceania')">Oceania</label>
+              <input type="radio" class="btn-check" name="btnradio" id="btnradioPolar" autocomplete="off">
+              <label class="btn btn-outline-light" for="btnradioPolar" @click="changeRegion('Polar')">Polar</label>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </div>
+    <!--header-->
+    <div class="row bg-light border-bottom mb-3" v-show="isShow">
+      <div class="col">
+        <header class="h1 fw-bold d-flex justify-content-center align-items-center" @click="showTime()">{{header}}
+        </header>
+      </div>
+    </div>
+    <!--main-->
+    <div class="container" v-show="isShow">
+      <div class="row">
+        <div class="col-md-8 col-lg-9 mb-3">
+          <div class="col-12 mb-3">
+            <div class="input-group">
+              <span class="input-group-text">
+                {{filterData.length}} results
+              </span>
+              <input class="form-control" type="search" placeholder="Search" v-model="input">
+              <span class="input-group-text">
+                page : {{num+1}}/{{Math.ceil(filterData.length/20)}}
+              </span>
+            </div>
+          </div>
+          <!--card-->
+          <div class="row justify-content-center">
+            <div class="col-md-4 col-lg-3 mb-3" v-for="(item,index) in displayData" :key="index" @click="display(item)">
+              <div class="card text-center bg-light border border-dark p-1 position-relative">
+                <img :src="item.flag" class="card-img-top img-fluid" :alt="item.name">
+                <div class="card-body p-2">
+                  <p class="card-text fw-bold">{{item.name}}</p>
+                </div>
+                <span class="badge position-absolute top-0 start-0">{{item.region}}</span>
+              </div>
+            </div>
+          </div>
+          <!--pagination-->
+          <div class="row mb-3">
+            <div class="col text-center">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-dark" @click.prevent="prePage()">&laquo; Previous</button>
+                <button type="button" class="btn btn-outline-dark" @click.prevent="nextPage()">Next &raquo;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="d-none d-md-block col-md-4 col-lg-3 mb-3">
+          <!--aside-->
+          <div class="border border-dark rounded-3 p-3">
+            <h3 class="fw-bold h5">
+              Ranking of Population
+              <span v-show="region">in {{region}}</span>
+            </h3>
+            <ol class="ps-3 mb-3">
+              <li class="mb-1" v-for='(item,index) in populationRank' :key="index" @click="display(item)">
+                <img :src="item.flag" :alt="item.name" style="width:30px;" class="border border-dark me-2">
+                <span class="fw-bold me-1">{{item.alpha3Code}}</span>
+                <span class="d-none d-lg-inline-block text-secondary">
+                  : {{(item.population/1000000).toFixed(2)}}M ppl
+                </span>
+              </li>
+            </ol>
+            <hr>
+            <h3 class="fw-bold h5">
+              Ranking of Area
+              <span v-show="region">in {{region}}</span>
+            </h3>
+            <ol class="ps-3 mb-0">
+              <li class="mb-1" v-for='(item,index) in areaRank' :key="index" @click="display(item)">
+                <img :src="item.flag" :alt="item.name" style="width:30px;" class="border border-dark me-2">
+                <span class="fw-bold me-1">{{item.alpha3Code}}</span>
+                <span class="d-none d-lg-inline-block text-secondary">
+                  : {{(item.area/1000000).toFixed(2)}}M k㎡
+                </span>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--detail-->
+    <div class="container mt-3" v-show="!isShow">
+      <div class="row">
+        <div class="col-12 mb-2 position-relative">
+          <button class="btn btn-sm btn-outline-dark position-absolute top-0 start-0" @click="isShow=true">Back</button>
+          <h2 class="h3 fw-bold text-center">{{temp.name}}</h2>
+        </div>
+        <div class="col-md-4 col-lg-3 mb-3">
+          <div class="border border-dark p-1">
+            <img :src="temp.flag" class="img-fluid" :alt="temp.name">
+          </div>
+        </div>
+        <div class="col-md-8 col-lg-5">
+          <table class="table table-bordered border-dark align-middle">
+            <tbody>
+              <tr>
+                <th class="bg-light">Native Name</th>
+                <td>{{temp.nativeName}}</td>
+              </tr>
+              <tr>
+                <th class="bg-light">Region</th>
+                <td>{{temp.region}}</td>
+              </tr>
+              <tr>
+                <th class="bg-light">Subregion</th>
+                <td>{{temp.subregion}}</td>
+              </tr>
+              <tr>
+                <th class="bg-light">Capital</th>
+                <td>{{temp.capital}}</td>
+              </tr>
+              <tr>
+                <th class="bg-light">Demonym</th>
+                <td>{{temp.demonym}}</td>
+              </tr>
+              <tr>
+                <th class="bg-light">Area</th>
+                <td>{{temp.area}} km²</td>
+              </tr>
+              <tr>
+                <th class="bg-light">Population</th>
+                <td>{{temp.population}} ppl</td>
+              </tr>
+              <tr>
+                <th class="bg-light">Languages</th>
+                <td>
+                  <ol class="m-0 ps-3">
+                    <li v-for="(item,index) in temp.languages" :key="index">{{item.name}} ({{item.nativeName}})</li>
+                  </ol>
+                </td>
+              </tr>
+              <tr>
+                <th class="bg-light">Currencies</th>
+                <td>
+                  <ol class="m-0 ps-3">
+                    <li v-for="(item,index) in temp.currencies" :key="index">{{item.name}} ({{item.code}})</li>
+                  </ol>
+                </td>
+              </tr>
+              <tr>
+                <th class="bg-light">Timezones</th>
+                <td>
+                  <ol class="m-0 ps-3">
+                    <li v-for="(item,index) in temp.timezones" :key="index">{{item}}</li>
+                  </ol>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-12 col-lg-4 mb-3">
+          <div class="border border-dark p-1">
+            <iframe width="100%" height="400" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"
+              :src=`https://maps.google.com.tw/maps?f=q&hl=en&q=${temp.name}&z=5&output=embed`></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--footer-->
+    <div class="row bg-dark text-light">
+      <div class="col">
+        <footer class="text-center py-3">
+          {{copyright}}
+          <a class="text-decoration-none text-warning" :href="source" target="_blank">(source : {{source}})</a>
+        </footer>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <script type="module">
+    import { createApp, ref, computed, onMounted, reactive } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.1.4/vue.esm-browser.min.js'
+    const app = createApp({
+      setup() {
+        // axios取得外部資料
+        const data = ref([])
+        function getData() {
+          const url = "https://restcountries.eu/rest/v2/all"
+          axios
+            .get(url)
+            .then((response) => {
+              data.value = response.data;
+            })
+            .catch((error) => {
+              console.log(error)
+            })
+        }
+        // 初始化
+        onMounted(() => {
+          getData()
+        })
+        // region 切換                
+        function changeRegion(text) {
+          region.value = text
+          num.value = 0
+          isShow.value = true
+          temp.value = {}
+          input.value = ''
+        }
+        // 篩選資料&搜尋資料
+        const region = ref('')
+        const input = ref('')
+        const filterData = computed(() => {
+          if (input.value) {
+            return data.value.filter(place => {
+              const regexp = new RegExp(input.value, 'gi')
+              return place.name.match(regexp)
+            })
+          }
+          if (!region.value) { return data.value }
+          const newData = data.value.filter(item => item.region === region.value)
+          return newData
+        })
+        // 顯示20筆
+        const num = ref(0)
+        function prePage() {
+          if (num.value <= 0) {
+            alert(`This is the first page!`)
+          } else {
+            num.value = num.value - 1
+          }
+        }
+        function nextPage() {
+          if (filterData.value.length / 20 <= num.value + 1) {
+            alert(`This is the last page!`)
+          } else {
+            num.value = num.value + 1
+          }
+        }
+        const displayData = computed(() => {
+          if (filterData.value.length >= 20) {
+            return filterData.value.slice(num.value * 20 + 0, num.value * 20 + 20)
+          } else {
+            return filterData.value
+          }
+        })
+        // detail 頁面顯示切換
+        const temp = ref({})
+        const isShow = ref(true)
+        function display(item) {
+          isShow.value = false
+          temp.value = { ...item }
+          temp.value.area = temp.value.area.toLocaleString()
+          temp.value.population = temp.value.population.toLocaleString()
+        }
+        // aside rank
+        const populationRank = computed(() => {
+          const rankPopulation = [...filterData.value].sort((a, b) => b.population - a.population)
+          return rankPopulation.slice(0, 10)
+        })
+        const areaRank = computed(() => {
+          const rankArea = [...filterData.value].sort((a, b) => b.area - a.area)
+          return rankArea.slice(0, 10)
+        })
+        // header 點擊顯示時間
+        const header = ref('Hello World!')
+        function showTime() {
+          setInterval(() => {
+            const date = new Date()
+            header.value = `It's ${date.toLocaleTimeString('it-IT')}.`
+          }, 1000)
+        }
+        // copyright 自動變更年份 
+        const copyright = ref('copyright©' + new Date().getFullYear() + ' Anny Cheng.')
+        const source = ref('https://restcountries.eu')
+        return {
+          data,
+          num,
+          region,
+          header,
+          copyright,
+          source,
+          isShow,
+          temp,
+          getData,
+          showTime,
+          changeRegion,
+          prePage,
+          nextPage,
+          display,
+          filterData,
+          displayData,
+          populationRank,
+          areaRank,
+          input
+        }
+      }
+    })
+    app.mount('#app')
+  </script>
+</body>
+
+</html>
