@@ -9,6 +9,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
+  <link rel="shortcut icon" href="favicon.ico" />
 </head>
 
 <body>
@@ -17,48 +18,49 @@
     <div class="row position-sticky top-0">
       <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand fw-bold" href="#">
-            Countries
+          <a class="navbar-brand fw-bold" href="https://chengyuu.github.io/countriesoftheworld/">
+            🌎 Countries
             <span class="d-none d-lg-inline-block">of the World</span>
           </a>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <div class="collapse navbar-collapse flex-grow-0" id="navbarText">
+          <div class="collapse navbar-collapse text-center flex-grow-0" id="navbarText">
             <div class="btn-group flex-wrap" role="group">
-              <input type="radio" class="btn-check" name="btnradio" id="btnradioAll" autocomplete="off" checked>
-              <label class="btn btn-outline-light" for="btnradioAll" @click="changeRegion('')">All</label>
-              <input type="radio" class="btn-check" name="btnradio" id="btnradioAsia" autocomplete="off">
-              <label class="btn btn-outline-light" for="btnradioAsia" @click="changeRegion('Asia')">Asia</label>
-              <input type="radio" class="btn-check" name="btnradio" id="btnradioEurope" autocomplete="off">
-              <label class="btn btn-outline-light" for="btnradioEurope" @click="changeRegion('Europe')">Europe</label>
-              <input type="radio" class="btn-check" name="btnradio" id="btnradioAmericas" autocomplete="off">
-              <label class="btn btn-outline-light" for="btnradioAmericas"
-                @click="changeRegion('Americas')">Americas</label>
-              <input type="radio" class="btn-check" name="btnradio" id="btnradioAfrica" autocomplete="off">
-              <label class="btn btn-outline-light" for="btnradioAfrica" @click="changeRegion('Africa')">Africa</label>
-              <input type="radio" class="btn-check" name="btnradio" id="btnradioOceania" autocomplete="off">
-              <label class="btn btn-outline-light" for="btnradioOceania"
-                @click="changeRegion('Oceania')">Oceania</label>
-              <input type="radio" class="btn-check" name="btnradio" id="btnradioPolar" autocomplete="off">
-              <label class="btn btn-outline-light" for="btnradioPolar" @click="changeRegion('Polar')">Polar</label>
+              <button type="button" class="btn btn-outline-light" @click="changeRegion('')"
+                :class="{active:region===''}">All</button>
+              <button type="button" class="btn btn-outline-light" @click="changeRegion('Asia')"
+                :class="{active:region==='Asia'}">Asia</button>
+              <button type="button" class="btn btn-outline-light" @click="changeRegion('Europe')"
+                :class="{active:region==='Europe'}">Europe</button>
+              <button type="button" class="btn btn-outline-light" @click="changeRegion('Americas')"
+                :class="{active:region==='Americas'}">Americas</button>
+              <button type="button" class="btn btn-outline-light" @click="changeRegion('Africa')"
+                :class="{active:region==='Africa'}">Africa</button>
+              <button type="button" class="btn btn-outline-light" @click="changeRegion('Oceania')"
+                :class="{active:region==='Oceania'}">Oceania</button>
+              <button type="button" class="btn btn-outline-light" @click="changeRegion('Polar')"
+                :class="{active:region==='Polar'}">Polar</button>
             </div>
           </div>
         </div>
       </nav>
     </div>
     <!--header-->
-    <div class="row bg-light border-bottom mb-3" v-show="isShow">
+    <div class="row bg-light border-bottom" v-show="isShow">
       <div class="col">
         <header class="h1 fw-bold d-flex justify-content-center align-items-center" @click="showTime()">{{header}}
         </header>
       </div>
     </div>
     <!--main-->
-    <div class="container" v-show="isShow">
-      <div class="row">
-        <div class="col-md-8 col-lg-9 mb-3">
-          <div class="col-12 mb-3">
+    <div class="container position-relative my-3">
+      <!--list-->
+      <div class="row" v-show="isShow">
+        <!--left-->
+        <div class="col-md-8 col-lg-9">
+          <!--results & search-->
+          <div class="row mb-3">
             <div class="input-group">
               <span class="input-group-text">
                 {{filterData.length}} results
@@ -82,7 +84,7 @@
             </div>
           </div>
           <!--pagination-->
-          <div class="row mb-3">
+          <div class="row">
             <div class="col text-center">
               <div class="btn-group" role="group">
                 <button type="button" class="btn btn-outline-dark" @click.prevent="prePage()">&laquo; Previous</button>
@@ -91,46 +93,68 @@
             </div>
           </div>
         </div>
+        <!--right-->
         <div class="d-none d-md-block col-md-4 col-lg-3 mb-3">
-          <!--aside-->
-          <div class="border border-dark rounded-3 p-3">
-            <h3 class="fw-bold h5">
-              Ranking of Population
-              <span v-show="region">in {{region}}</span>
-            </h3>
-            <ol class="ps-3 mb-3">
-              <li class="mb-1" v-for='(item,index) in populationRank' :key="index" @click="display(item)">
-                <img :src="item.flag" :alt="item.name" style="width:30px;" class="border border-dark me-2">
+          <div class="border border-dark rounded-3 p-2 pb-0">
+            <h3 class="fw-bold h5 text-center border-bottom " v-show="region">In {{region}}</h3>
+            <a class="d-block fw-bold h5 text-center"
+              href="https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_population#Sovereign_states_and_dependencies_by_population"
+              target="_blank">Rank of Population</a>
+            <ol class="ps-3 pb-3 border-bottom position-relative">
+              <li class="mb-1" v-for='(item,index) in rankPopulation' :key="index" @click="display(item)">
+                <img :src="item.flag" :alt="item.name" style="width:25px;" class="border border-dark me-2">
                 <span class="fw-bold me-1">{{item.alpha3Code}}</span>
-                <span class="d-none d-lg-inline-block text-secondary">
-                  : {{(item.population/1000000).toFixed(2)}}M ppl
+                <span class="text-secondary">
+                  : {{(item.population/1000000).toFixed(2)}}M
+                  ({{(item.population/sumPopulation*100).toFixed(0)}}%)
                 </span>
               </li>
+              <span class="badge text-dark position-absolute bottom-0 end-0">(unit : people)</span>
             </ol>
-            <hr>
-            <h3 class="fw-bold h5">
-              Ranking of Area
-              <span v-show="region">in {{region}}</span>
-            </h3>
-            <ol class="ps-3 mb-0">
-              <li class="mb-1" v-for='(item,index) in areaRank' :key="index" @click="display(item)">
-                <img :src="item.flag" :alt="item.name" style="width:30px;" class="border border-dark me-2">
+            <a class="d-block fw-bold h5 text-center"
+              href="https://en.wikipedia.org/wiki/List_of_countries_and_dependencies_by_area#Table" target="_blank">Rank
+              of Area</a>
+            <ol class="ps-3 pb-3 border-bottom position-relative">
+              <li class="mb-1" v-for='(item,index) in rankArea' :key="index" @click="display(item)">
+                <img :src="item.flag" :alt="item.name" style="width:25px;" class="border border-dark me-2">
                 <span class="fw-bold me-1">{{item.alpha3Code}}</span>
-                <span class="d-none d-lg-inline-block text-secondary">
-                  : {{(item.area/1000000).toFixed(2)}}M k㎡
+                <span class="text-secondary">
+                  : {{(item.area/1000000).toFixed(2)}}M
+                  ({{(item.area/sumArea*100).toFixed(0)}}%)
                 </span>
               </li>
+              <span class="badge text-dark position-absolute bottom-0 end-0">(unit : k㎡)</span>
+            </ol>
+            <a class="d-block fw-bold h5 text-center"
+              href="https://en.wikipedia.org/wiki/List_of_languages_by_the_number_of_countries_in_which_they_are_recognized_as_an_official_language#List"
+              target="_blank">Rank of Languages</a>
+            <ol class="ps-3 pb-3 border-bottom position-relative">
+              <li class="mb-1" v-for='(item,index) in rankLanguages' :key="index">
+                <span class="fw-bold me-1">{{item[0]}}</span>
+                <span class="text-secondary">: {{item[1]}} ({{(item[1]/filterData.length*100).toFixed(0)}}%)</span>
+              </li>
+              <span class="badge text-dark position-absolute bottom-0 end-0">(unit : countries)</span>
+            </ol>
+            <a class="d-block fw-bold h5 text-center"
+              href="https://en.wikipedia.org/wiki/List_of_circulating_currencies#Currencies_by_number_of_countries/_territories"
+              target="_blank">Rank of Currencies</a>
+            <ol class="ps-3 pb-3 border-bottom position-relative">
+              <li class="mb-1" v-for='(item,index) in rankCurrencies' :key="index">
+                <span class="fw-bold me-1">{{item[0]}}</span>
+                <span class="text-secondary">: {{item[1]}} ({{(item[1]/filterData.length*100).toFixed(0)}}%)</span>
+              </li>
+              <span class="badge text-dark position-absolute bottom-0 end-0">(unit : countries)</span>
             </ol>
           </div>
         </div>
       </div>
-    </div>
-    <!--detail-->
-    <div class="container mt-3" v-show="!isShow">
-      <div class="row">
+      <!--detail-->
+      <div class="row" v-show="!isShow">
         <div class="col-12 mb-2 position-relative">
           <button class="btn btn-sm btn-outline-dark position-absolute top-0 start-0" @click="isShow=true">Back</button>
           <h2 class="h3 fw-bold text-center">{{temp.name}}</h2>
+          <a class="btn btn-sm btn-outline-danger position-absolute top-0 end-0"
+            :href=`https://en.wikipedia.org/wiki/${temp.name}` target="_blank">More</a>
         </div>
         <div class="col-md-4 col-lg-3 mb-3">
           <div class="border border-dark p-1">
@@ -172,7 +196,10 @@
                 <th class="bg-light">Languages</th>
                 <td>
                   <ol class="m-0 ps-3">
-                    <li v-for="(item,index) in temp.languages" :key="index">{{item.name}} ({{item.nativeName}})</li>
+                    <li v-for="(item,index) in temp.languages" :key="index">
+                      {{item.name}}
+                      <span v-show="item.nativeName">({{item.nativeName}})</span>
+                    </li>
                   </ol>
                 </td>
               </tr>
@@ -180,7 +207,10 @@
                 <th class="bg-light">Currencies</th>
                 <td>
                   <ol class="m-0 ps-3">
-                    <li v-for="(item,index) in temp.currencies" :key="index">{{item.name}} ({{item.code}})</li>
+                    <li v-for="(item,index) in temp.currencies" :key="index">
+                      {{item.name}}
+                      <span v-show="item.code">({{item.code}})</span>
+                    </li>
                   </ol>
                 </td>
               </tr>
@@ -208,14 +238,11 @@
       <div class="col">
         <footer class="text-center py-3">
           {{copyright}}
-          <a class="text-decoration-none text-warning" :href="source" target="_blank">(source : {{source}})</a>
+          <a :href="source" target="_blank">(source : {{source}})</a>
         </footer>
       </div>
     </div>
   </div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"></script>
   <script type="module">
     import { createApp, ref, computed, onMounted, reactive } from 'https://cdnjs.cloudflare.com/ajax/libs/vue/3.1.4/vue.esm-browser.min.js'
     const app = createApp({
@@ -250,8 +277,9 @@
         const input = ref('')
         const filterData = computed(() => {
           if (input.value) {
+            region.value = ''
             return data.value.filter(place => {
-              const regexp = new RegExp(input.value, 'gi')
+              const regexp = new RegExp("^" + input.value, 'gi')
               return place.name.match(regexp)
             })
           }
@@ -259,6 +287,13 @@
           const newData = data.value.filter(item => item.region === region.value)
           return newData
         })
+        // scroll to top
+        function scrollToTop() {
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+          });
+        }
         // 顯示20筆
         const num = ref(0)
         function prePage() {
@@ -266,6 +301,7 @@
             alert(`This is the first page!`)
           } else {
             num.value = num.value - 1
+            scrollToTop()
           }
         }
         function nextPage() {
@@ -273,6 +309,7 @@
             alert(`This is the last page!`)
           } else {
             num.value = num.value + 1
+            scrollToTop()
           }
         }
         const displayData = computed(() => {
@@ -286,19 +323,44 @@
         const temp = ref({})
         const isShow = ref(true)
         function display(item) {
+          scrollToTop()
           isShow.value = false
           temp.value = { ...item }
           temp.value.area = temp.value.area.toLocaleString()
           temp.value.population = temp.value.population.toLocaleString()
         }
-        // aside rank
-        const populationRank = computed(() => {
-          const rankPopulation = [...filterData.value].sort((a, b) => b.population - a.population)
-          return rankPopulation.slice(0, 10)
+        // aside rank 
+        const rankPopulation = computed(() => {
+          const population = [...filterData.value].sort((a, b) => b.population - a.population)
+          return population.slice(0, 5)
         })
-        const areaRank = computed(() => {
-          const rankArea = [...filterData.value].sort((a, b) => b.area - a.area)
-          return rankArea.slice(0, 10)
+        const rankArea = computed(() => {
+          const area = [...filterData.value].sort((a, b) => b.area - a.area)
+          return area.slice(0, 5)
+        })
+        const rankLanguages = computed(() => {
+          const languages = [...filterData.value].map((item) => item.languages[0].name)
+          const sumLanguages = languages.reduce((obj, content) => {
+            if (!obj[content]) obj[content] = 1
+            else obj[content] += 1
+            return obj
+          }, {})
+          return Object.entries(sumLanguages).sort((a, b) => b[1] - a[1]).slice(0, 5)
+        })
+        const rankCurrencies = computed(() => {
+          const currencies = [...filterData.value].map((item) => item.currencies[0].name)
+          const sumCurrencies = currencies.reduce((obj, content) => {
+            if (!obj[content]) obj[content] = 1
+            else obj[content] += 1
+            return obj
+          }, {})
+          return Object.entries(sumCurrencies).sort((a, b) => b[1] - a[1]).slice(0, 5)
+        })
+        const sumPopulation = computed(() => {
+          return [...filterData.value].reduce((total, item) => total + item.population, 0)
+        })
+        const sumArea = computed(() => {
+          return [...filterData.value].reduce((total, item) => total + item.area, 0)
         })
         // header 點擊顯示時間
         const header = ref('Hello World!')
@@ -328,9 +390,13 @@
           display,
           filterData,
           displayData,
-          populationRank,
-          areaRank,
-          input
+          rankPopulation,
+          rankArea,
+          input,
+          rankLanguages,
+          rankCurrencies,
+          sumPopulation,
+          sumArea
         }
       }
     })
