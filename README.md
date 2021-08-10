@@ -1,6 +1,6 @@
 # Countries of the World | 世界各國介紹網站
 
-![website screenshot](https://github.com/chengyuu/chengyuu.github.io/blob/master/img/countries%20website.png)
+![website screenshot](https://github.com/chengyuu/chengyuu.github.io/blob/master/img/countries%20website-play.gif)
 
 ### **[Website Link](https://chengyuu.github.io/Countries-Of-The-World/)**
 
