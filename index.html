@@ -55,7 +55,7 @@
       </div>
     </div>
     <!--main-->
-    <div class="container position-relative my-3">
+    <div class="container position-relative py-3" id="main">
       <!--list-->
       <div class="row" v-show="isShow">
         <!--left-->
@@ -74,10 +74,10 @@
           </div>
           <!--card-->
           <div class="row justify-content-center">
-            <div class="col-md-4 col-lg-3 mb-3" v-for="(item,index) in displayData" :key="index" @click="display(item)">
+            <div class="col-md-4 col-lg-3 mb-3 d-flex align-items-stretch" v-for="(item,index) in displayData" :key="index" @click="display(item)">
               <div class="card text-center bg-light border border-dark p-1 pb-0 position-relative">
                 <img :src="item.flag" class="card-img-top img-fluid" :alt="item.name">
-                <div class="card-body p-2">
+                <div class="card-body d-flex align-items-center justify-content-center py-1">
                   <p class="card-text fw-bold">{{item.name}}</p>
                 </div>
                 <span class="badge position-absolute top-0 start-0">{{item.region}}</span>
