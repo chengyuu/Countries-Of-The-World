@@ -257,11 +257,11 @@
         // axios取得外部資料
         const data = ref([])
         function getData() {
-          const url = "https://restcountries.eu/rest/v2/all"
+          const url = "https://chengyuu.github.io/Countries-Of-The-World/data/countries.json"
           axios
             .get(url)
             .then((response) => {
-              data.value = response.data;
+              data.value = response.data.data;
             })
             .catch((error) => {
               console.log(error)
@@ -379,7 +379,7 @@
         }
         // copyright 自動變更年份 
         const copyright = ref('copyright©' + new Date().getFullYear() + ' Anny Cheng.')
-        const source = ref('https://restcountries.eu')
+        const source = ref('https://github.com/apilayer/restcountries')
         return {
           data,
           num,
